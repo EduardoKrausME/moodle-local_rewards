@@ -1,14 +1,37 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * provider.php
+ *
+ * @package   local_rewards
+ * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_rewards\privacy;
 
+use coding_exception;
+use context;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
-
-defined("MOODLE_INTERNAL") || die();
+use dml_exception;
 
 /**
  * Privacy provider for local_rewards.
@@ -43,6 +66,7 @@ class provider implements
      *
      * @param int $userid The user id.
      * @return contextlist
+     * @throws dml_exception
      */
     public static function get_contexts_for_userid($userid) {
         global $DB;
@@ -61,6 +85,8 @@ class provider implements
      *
      * @param approved_contextlist $contextlist The approved contexts.
      * @return void
+     * @throws coding_exception
+     * @throws dml_exception
      */
     public static function export_user_data(approved_contextlist $contextlist) {
         global $DB;
@@ -96,8 +122,9 @@ class provider implements
     /**
      * Deletes all data for all users in the provided context.
      *
-     * @param \context $context The context.
+     * @param context $context The context.
      * @return void
+     * @throws dml_exception
      */
     public static function delete_data_for_all_users_in_context(\context $context) {
         global $DB;
@@ -114,6 +141,7 @@ class provider implements
      *
      * @param approved_contextlist $contextlist The approved contexts.
      * @return void
+     * @throws dml_exception
      */
     public static function delete_data_for_user(approved_contextlist $contextlist) {
         global $DB;

@@ -1,15 +1,38 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * issuance_manager.php
+ *
+ * @package   local_rewards
+ * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_rewards\manager;
 
-defined("MOODLE_INTERNAL") || die();
+use dml_exception;
+use stdClass;
 
 /**
  * Issues, exports, and lists reward achievements.
  */
 class issuance_manager {
     /**
-     * Issues a reward when the activity completion requirement is satisfied.
+     * Issues a reward when all configured criteria are satisfied.
      *
      * @param int $cmid The course module id.
      * @param int $userid The user id.
@@ -23,7 +46,7 @@ class issuance_manager {
             return 0;
         }
 
-        if (!self::user_completed_module($cmid, $userid)) {
+        if (!criteria_manager::user_matches_config($config, $userid)) {
             return 0;
         }
 
@@ -50,33 +73,11 @@ class issuance_manager {
     }
 
     /**
-     * Verifies whether the user completed a course module.
-     *
-     * @param int $cmid The course module id.
-     * @param int $userid The user id.
-     * @return bool
-     */
-    public static function user_completed_module($cmid, $userid) {
-        global $DB;
-
-        $completion = $DB->get_record("course_modules_completion", [
-            "coursemoduleid" => $cmid,
-            "userid" => $userid,
-        ]);
-
-        if (!$completion) {
-            return false;
-        }
-
-        return !empty($completion->completionstate);
-    }
-
-    /**
      * Returns the next pending popup issue for a user.
      *
      * @param int $userid The user id.
-     * @return \stdClass|null
-     * @throws \dml_exception
+     * @return stdClass|null
+     * @throws dml_exception
      */
     public static function get_pending_popup($userid) {
         global $DB;
@@ -88,7 +89,7 @@ class issuance_manager {
                 "userid" => $userid,
                 "popupshown" => 0,
             ],
-            "timeissued ASC"
+            "timeissued"
         );
     }
 
@@ -138,12 +139,29 @@ class issuance_manager {
      * Returns all issues for one user.
      *
      * @param int $userid The user id.
+     * @param int $courseid Restrict to one course when informed.
      * @return array
      */
-    public static function get_user_issues($userid) {
+    public static function get_user_issues($userid, $courseid = 0) {
         global $DB;
 
+        if ($courseid) {
+            return $DB->get_records("local_rewards_issues", ["userid" => $userid, "courseid" => $courseid], "timeissued DESC");
+        }
+
         return $DB->get_records("local_rewards_issues", ["userid" => $userid], "timeissued DESC");
+    }
+
+    /**
+     * Returns all issues for one course.
+     *
+     * @param int $courseid The course id.
+     * @return array
+     */
+    public static function get_course_issues($courseid) {
+        global $DB;
+
+        return $DB->get_records("local_rewards_issues", ["courseid" => $courseid], "timeissued DESC");
     }
 
     /**
@@ -158,7 +176,11 @@ class issuance_manager {
             return true;
         }
 
-        return has_capability("local/rewards:manage", \context_system::instance());
+        if (has_capability("local/rewards:manage", \context_system::instance())) {
+            return true;
+        }
+
+        return has_capability("local/rewards:viewcourse", \context_course::instance($issue->courseid));
     }
 
     /**
@@ -180,9 +202,6 @@ class issuance_manager {
      * @return array
      */
     public static function export_issue(\stdClass $issue, $forpublic = false) {
-        global $DB;
-
-        $config = config_manager::get_by_cmid($issue->cmid);
         $user = \core_user::get_user($issue->userid, "id, firstname, lastname, firstnamephonetic, lastnamephonetic, middlename, alternatename, email");
         $course = get_course($issue->courseid);
         $cm = get_coursemodule_from_id(null, $issue->cmid, 0, false, MUST_EXIST);
@@ -211,22 +230,23 @@ class issuance_manager {
             "shareimageurl" => self::get_personalized_image_url($issue),
             "linkedinurl" => self::build_linkedin_url($issue),
             "sharetext" => $sharetext,
-            "allbadgesurl" => (new \moodle_url("/local/rewards/my.php"))->out(false),
+            "allbadgesurl" => (new \moodle_url("/local/rewards/my.php", ["userid" => $issue->userid, "courseid" => $issue->courseid]))->out(false),
             "publicenabled" => self::is_public_enabled($issue),
             "issueimagealt" => get_string("rewardissueimagealt", "local_rewards"),
         ];
     }
 
     /**
-     * Exports issue cards for the current user page.
+     * Exports issue cards for one user page.
      *
      * @param int $userid The user id.
+     * @param int $courseid Restrict to one course when informed.
      * @return array
      */
-    public static function export_issue_cards($userid) {
+    public static function export_issue_cards($userid, $courseid = 0) {
         $cards = [];
 
-        foreach (self::get_user_issues($userid) as $issue) {
+        foreach (self::get_user_issues($userid, $courseid) as $issue) {
             $export = self::export_issue($issue);
             $cards[] = [
                 "name" => $export["name"],
@@ -237,10 +257,36 @@ class issuance_manager {
                 "timeissued" => $export["timeissued"],
                 "viewurl" => $export["viewurl"],
                 "linkedinurl" => $export["linkedinurl"],
+                "studentname" => $export["studentname"],
             ];
         }
 
         return $cards;
+    }
+
+    /**
+     * Exports a course-wide medal table.
+     *
+     * @param int $courseid The course id.
+     * @return array
+     */
+    public static function export_course_rows($courseid) {
+        $rows = [];
+
+        foreach (self::get_course_issues($courseid) as $issue) {
+            $export = self::export_issue($issue);
+            $rows[] = [
+                "name" => $export["name"],
+                "studentname" => $export["studentname"],
+                "activity" => $export["activityname"],
+                "timeissued" => $export["timeissued"],
+                "imageurl" => $export["imageurl"],
+                "viewurl" => self::get_view_url($issue),
+                "linkedinurl" => $export["linkedinurl"],
+            ];
+        }
+
+        return $rows;
     }
 
     /**
@@ -316,14 +362,14 @@ class issuance_manager {
     }
 
     /**
-     * Issues rewards for all users who completed a configured activity and still miss the record.
+     * Issues rewards for all users who already satisfy the criteria and still miss the record.
      *
      * @return void
      */
     public static function repair_missing_issues() {
         global $DB;
 
-        $sql = "SELECT cfg.cmid, cmc.userid
+        $sql = "SELECT cfg.cmid, cfg.id AS configid, cmc.userid
                   FROM {local_rewards_configs} cfg
                   JOIN {course_modules_completion} cmc
                     ON cmc.coursemoduleid = cfg.cmid

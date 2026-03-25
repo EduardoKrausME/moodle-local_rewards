@@ -1,8 +1,31 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * badge_bank_manager.php
+ *
+ * @package   local_rewards
+ * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace local_rewards\manager;
 
-defined("MOODLE_INTERNAL") || die();
+use dml_exception;
+use stdClass;
 
 /**
  * Manages reusable badge bank items.
@@ -12,6 +35,7 @@ class badge_bank_manager {
      * Returns all bank badges ordered by name.
      *
      * @return array
+     * @throws dml_exception
      */
     public static function get_all_badges() {
         global $DB;
@@ -23,7 +47,7 @@ class badge_bank_manager {
      * Returns a single bank badge.
      *
      * @param int $id The badge id.
-     * @return \stdClass|null
+     * @return stdClass|null
      */
     public static function get_badge($id) {
         global $DB;
@@ -34,11 +58,13 @@ class badge_bank_manager {
     /**
      * Creates or updates a bank badge.
      *
-     * @param \stdClass $record The badge data.
+     * @param stdClass $record The badge data.
      * @param int $draftimageitemid The draft image id.
      * @return int
+     * @throws dml_exception
+     * @throws \moodle_exception
      */
-    public static function save_badge(\stdClass $record, $draftimageitemid = 0) {
+    public static function save_badge(stdClass $record, $draftimageitemid = 0) {
         global $DB, $USER;
 
         $now = time();

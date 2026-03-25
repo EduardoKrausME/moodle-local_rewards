@@ -15,38 +15,39 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * repair_awards_task.php
+ * course.php
  *
  * @package   local_rewards
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_rewards\task;
-
-use coding_exception;
 use local_rewards\manager\issuance_manager;
 
-/**
- * Repairs missing rewards that may have been skipped by events.
- */
-class repair_awards_task extends \core\task\scheduled_task {
-    /**
-     * Returns the human readable task name.
-     *
-     * @return string
-     * @throws coding_exception
-     */
-    public function get_name() {
-        return get_string("rewardcompletiontask", "local_rewards");
-    }
+require(__DIR__ . "/../../config.php");
 
-    /**
-     * Executes the repair process.
-     *
-     * @return void
-     */
-    public function execute() {
-        issuance_manager::repair_missing_issues();
-    }
-}
+require_login();
+
+$courseid = required_param("courseid", PARAM_INT);
+$course = get_course($courseid);
+$coursecontext = context_course::instance($courseid);
+require_capability("local/rewards:viewcourse", $coursecontext);
+
+$PAGE->set_url("/local/rewards/course.php", ["courseid" => $courseid]);
+$PAGE->set_context($coursecontext);
+$PAGE->set_pagelayout("admin");
+$PAGE->set_course($course);
+$PAGE->set_title(get_string("rewardcoursebadges", "local_rewards"));
+$PAGE->set_heading(format_string($course->fullname));
+
+$rows = issuance_manager::export_course_rows($courseid);
+
+echo $OUTPUT->header();
+
+echo $OUTPUT->render_from_template("local_rewards/course_badges", [
+    "title" => get_string("rewardcoursebadges", "local_rewards"),
+    "subtitle" => format_string($course->fullname),
+    "rows" => $rows,
+]);
+
+echo $OUTPUT->footer();

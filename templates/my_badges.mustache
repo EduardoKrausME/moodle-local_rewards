@@ -1,7 +1,32 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_rewards/my_badges
+
+    Example context (json):
+    {
+        Aqui tem que criar o context em inglês
+    }
+}}
+
 <div class="local-rewards-page">
     <div class="local-rewards-toolbar">
         <div>
-            <h1 class="h2 mb-1">{{#str}}rewardallbadges, local_rewards{{/str}}</h1>
+            <h1 class="h2 mb-1">{{title}}{{^title}}{{#str}}rewardallbadges, local_rewards{{/str}}{{/title}}</h1>
             <div class="text-muted">{{#str}}rewardintro, local_rewards{{/str}}</div>
         </div>
     </div>
@@ -16,6 +41,7 @@
                     <div class="local-rewards-card__body">
                         <h2 class="local-rewards-card__title">{{name}}</h2>
                         <div class="local-rewards-card__meta">
+                            {{#showstudentname}}<div><strong>{{#str}}rewardstudent, local_rewards{{/str}}:</strong> {{studentname}}</div>{{/showstudentname}}
                             <div><strong>{{#str}}rewardcourse, local_rewards{{/str}}:</strong> {{course}}</div>
                             <div><strong>{{#str}}rewardactivity, local_rewards{{/str}}:</strong> {{activity}}</div>
                             <div><strong>{{#str}}rewardearnedon, local_rewards{{/str}}:</strong> {{timeissued}}</div>
