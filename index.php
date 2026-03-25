@@ -22,6 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// phpcs:disable moodle.Files.RequireLogin.Missing
 require(__DIR__ . "/../../config.php");
 
 redirect(new moodle_url("/local/rewards/my.php"));

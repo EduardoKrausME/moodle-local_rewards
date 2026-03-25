@@ -24,6 +24,7 @@
 
 use local_rewards\manager\issuance_manager;
 
+// phpcs:disable moodle.Files.RequireLogin.Missing
 require(__DIR__ . "/../../config.php");
 
 $token = required_param("token", PARAM_ALPHANUMEXT);
