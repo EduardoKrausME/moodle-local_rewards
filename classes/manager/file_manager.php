@@ -24,6 +24,9 @@
 
 namespace local_rewards\manager;
 
+use context;
+use stdClass;
+
 /**
  * Handles plugin file areas and image URLs.
  */
@@ -45,7 +48,7 @@ class file_manager {
      *
      * @param stdClass $course The course object.
      * @param stdClass|null $cm The course module.
-     * @param \context $context The file context.
+     * @param context $context The file context.
      * @param string $filearea The file area.
      * @param array $args The path arguments.
      * @param bool $forcedownload Whether to force download.
@@ -60,7 +63,6 @@ class file_manager {
         if ($context->contextlevel != CONTEXT_SYSTEM) {
             send_file_not_found();
         }
-
 
         $itemid = array_shift($args);
         $filepath = "/" . implode("/", array_slice($args, 0, -1)) . "/";

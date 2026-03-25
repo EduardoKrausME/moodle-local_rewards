@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * settings.php
+ * Adds the badge bank page to site administration.
  *
  * @package   local_rewards
  * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
@@ -24,9 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * Adds the badge bank page to site administration.
- */
 if ($hassiteconfig) {
     $ADMIN->add("localplugins", new admin_externalpage(
         "local_rewards_bank",
