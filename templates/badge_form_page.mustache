@@ -1,0 +1,29 @@
+<div class="local-rewards-formwrap">
+    <div class="local-rewards-toolbar">
+        <div>
+            <h1 class="h2 mb-1">{{title}}</h1>
+            <div class="text-muted">{{#str}}rewardbanksubtitle, local_rewards{{/str}}</div>
+        </div>
+        <a class="btn btn-light" href="{{backurl}}">{{#str}}rewardbacktobank, local_rewards{{/str}}</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    {{{formhtml}}}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="local-rewards-preview">
+                {{#previewurl}}
+                    <img src="{{previewurl}}" alt="">
+                {{/previewurl}}
+                {{^previewurl}}
+                    <img src="{{defaultpreviewurl}}" alt="">
+                {{/previewurl}}
+            </div>
+        </div>
+    </div>
+</div>

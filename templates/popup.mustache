@@ -1,0 +1,27 @@
+<div class="local-rewards-popup" data-local-rewards-popup="true" aria-modal="true" role="dialog">
+    <div class="local-rewards-popup__dialog">
+        <div class="local-rewards-popup__body">
+            <div class="local-rewards-popup__visual">
+                <img src="{{imageurl}}" alt="{{issueimagealt}}">
+            </div>
+            <div>
+                <div class="local-rewards-popup__eyebrow">{{#str}}rewardpopupheading, local_rewards{{/str}}</div>
+                <h2 class="local-rewards-popup__title">{{name}}</h2>
+                <div class="local-rewards-popup__description">{{{description}}}</div>
+                <div class="local-rewards-popup__meta">
+                    <div><strong>{{#str}}rewardcourse, local_rewards{{/str}}:</strong> {{coursename}}</div>
+                    <div><strong>{{#str}}rewardactivity, local_rewards{{/str}}:</strong> {{activityname}}</div>
+                    <div><strong>{{#str}}rewardearnedon, local_rewards{{/str}}:</strong> {{timeissued}}</div>
+                </div>
+                <p class="local-rewards-popup__description">{{#str}}rewardpopupcta, local_rewards{{/str}}</p>
+                <div class="local-rewards-popup__actions">
+                    <a class="btn btn-primary" href="{{viewurl}}">{{#str}}rewardviewbadge, local_rewards{{/str}}</a>
+                    {{#haspublicurl}}
+                        <a class="btn btn-outline-primary" href="{{linkedinurl}}" target="_blank" rel="noopener">{{#str}}rewardsharelinkedin, local_rewards{{/str}}</a>
+                    {{/haspublicurl}}
+                    <button class="btn btn-light" type="button" data-local-rewards-close="true">{{#str}}rewardclose, local_rewards{{/str}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+<div class="local-rewards-page">
+    <div class="local-rewards-toolbar">
+        <div>
+            <h1 class="h2 mb-1">{{#str}}rewardbanktitle, local_rewards{{/str}}</h1>
+            <div class="text-muted">{{#str}}rewardbanksubtitle, local_rewards{{/str}}</div>
+        </div>
+        <a class="btn btn-primary" href="{{createurl}}">{{#str}}rewardcreatebadge, local_rewards{{/str}}</a>
+    </div>
+
+    {{#cards.0}}
+        <div class="local-rewards-grid">
+            {{#cards}}
+                <article class="local-rewards-card">
+                    <div class="local-rewards-card__image">
+                        <img src="{{imageurl}}" alt="">
+                    </div>
+                    <div class="local-rewards-card__body">
+                        <h2 class="local-rewards-card__title">{{name}}</h2>
+                        <div class="mb-3">{{{description}}}</div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a class="btn btn-primary" href="{{editurl}}">{{#str}}rewardeditbadge, local_rewards{{/str}}</a>
+                            <a class="btn btn-outline-danger"
+                               href="{{deleteurl}}"
+                               onclick="return confirm('{{deletelabel}}');">{{#str}}rewarddelete, local_rewards{{/str}}</a>
+                        </div>
+                    </div>
+                </article>
+            {{/cards}}
+        </div>
+    {{/cards.0}}
+
+    {{^cards.0}}
+        <div class="local-rewards-empty">{{#str}}rewardbankempty, local_rewards{{/str}}</div>
+    {{/cards.0}}
+</div>

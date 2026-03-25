@@ -1,0 +1,45 @@
+<div class="local-rewards-page">
+    <section class="local-rewards-hero">
+        <div class="local-rewards-hero__grid">
+            <div class="local-rewards-hero__imagewrap">
+                <img src="{{imageurl}}" alt="{{issueimagealt}}">
+            </div>
+            <div>
+                <div class="badge bg-primary-subtle text-primary-emphasis mb-3">{{#str}}rewardpublicpage, local_rewards{{/str}}</div>
+                <h1 class="local-rewards-hero__title">{{name}}</h1>
+                <div class="local-rewards-hero__description">{{{description}}}</div>
+
+                <div class="local-rewards-chiplist">
+                    <div class="local-rewards-chip">{{#str}}rewardstudent, local_rewards{{/str}}: {{studentname}}</div>
+                    <div class="local-rewards-chip">{{#str}}rewardcourse, local_rewards{{/str}}: {{coursename}}</div>
+                    <div class="local-rewards-chip">{{#str}}rewardactivity, local_rewards{{/str}}: {{activityname}}</div>
+                    <div class="local-rewards-chip">{{#str}}rewardearnedon, local_rewards{{/str}}: {{timeissued}}</div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    {{#showviewbutton}}<a class="btn btn-primary" href="{{viewurl}}">{{#str}}rewardviewbadge, local_rewards{{/str}}</a>{{/showviewbutton}}
+                    {{#haspublicurl}}
+                        <a class="btn btn-outline-primary" href="{{linkedinurl}}" target="_blank" rel="noopener">{{#str}}rewardsharelinkedin, local_rewards{{/str}}</a>
+                    {{/haspublicurl}}
+                    <a class="btn btn-light" href="{{allbadgesurl}}">{{#str}}rewardviewallbadges, local_rewards{{/str}}</a>
+                </div>
+
+                <div class="local-rewards-sharebox">
+                    <div class="local-rewards-sharebox__title">{{#str}}rewardsharetext, local_rewards{{/str}}</div>
+                    <textarea class="local-rewards-sharebox__text form-control" readonly>{{sharetext}}</textarea>
+                    {{#haspublicurl}}
+                        <div class="local-rewards-sharebox__title">{{#str}}rewardpubliclink, local_rewards{{/str}}</div>
+                        <input class="form-control mb-2" value="{{publicurl}}" readonly>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a class="btn btn-outline-secondary" href="{{publicurl}}" target="_blank" rel="noopener">{{#str}}rewardviewpublic, local_rewards{{/str}}</a>
+                            <a class="btn btn-outline-primary" href="{{linkedinurl}}" target="_blank" rel="noopener">{{#str}}rewardsharelinkedin, local_rewards{{/str}}</a>
+                        </div>
+                    {{/haspublicurl}}
+                    {{^haspublicurl}}
+                        <div class="alert alert-light border mt-3 mb-0">{{#str}}rewardpublicdisabled, local_rewards{{/str}}</div>
+                    {{/haspublicurl}}
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
