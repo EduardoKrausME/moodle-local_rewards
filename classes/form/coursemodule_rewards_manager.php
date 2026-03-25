@@ -87,6 +87,7 @@ class coursemodule_rewards_manager {
         $mform->addElement("advcheckbox", "rewards_requirecompletion", get_string("rewardcriterioncompletion", "local_rewards"));
         $mform->setDefault("rewards_requirecompletion", 1);
         $mform->freeze("rewards_requirecompletion");
+        $mform->hideIf("local_rewards_criteria_header", "rewards_enabled");
 
         $mform->addElement("advcheckbox", "rewards_requiremingrade", get_string("rewardcriterionmingrade", "local_rewards"));
         $mform->addElement("text", "rewards_mingrade", get_string("rewardcriterionmingradevalue", "local_rewards"), ["size" => 10]);
