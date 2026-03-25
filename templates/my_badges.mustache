@@ -19,9 +19,35 @@
 
     Example context (json):
     {
+      "title": "My Badges",
+      "cards": [
+        {
+          "imageurl": "https://example.com/pluginfile.php/301/local_rewards/badge-1.png",
+          "name": "Excellence in Learning",
+          "showstudentname": false,
+          "studentname": "John Smith",
+          "course": "Introduction to Web Development",
+          "activity": "Final Project Submission",
+          "timeissued": "March 25, 2026",
+          "description": "<p>This badge recognizes outstanding performance and active participation in the course.</p>",
+          "viewurl": "https://example.com/local/rewards/view.php?id=201",
+          "linkedinurl": "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fexample.com%2Flocal%2Frewards%2Fpublic.php%3Fid%3D201"
+        },
+        {
+          "imageurl": "https://example.com/pluginfile.php/302/local_rewards/badge-2.png",
+          "name": "Perfect Attendance",
+          "showstudentname": false,
+          "studentname": "John Smith",
+          "course": "Advanced CSS Techniques",
+          "activity": "Course Attendance",
+          "timeissued": "March 18, 2026",
+          "description": "<p>This badge is awarded for attending all scheduled sessions of the course.</p>",
+          "viewurl": "https://example.com/local/rewards/view.php?id=202",
+          "linkedinurl": "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fexample.com%2Flocal%2Frewards%2Fpublic.php%3Fid%3D202"
+        }
+      ]
     }
 }}
-
 <div class="local-rewards-page">
     <div class="local-rewards-toolbar">
         <div>
@@ -30,7 +56,7 @@
         </div>
     </div>
 
-    {{#cards.0}}
+    {{#cards}}
         <div class="local-rewards-grid">
             {{#cards}}
                 <article class="local-rewards-card">
@@ -54,9 +80,9 @@
                 </article>
             {{/cards}}
         </div>
-    {{/cards.0}}
+    {{/cards}}
 
-    {{^cards.0}}
+    {{^cards}}
         <div class="local-rewards-empty">{{#str}}rewardnobadges, local_rewards{{/str}}</div>
-    {{/cards.0}}
+    {{/cards}}
 </div>

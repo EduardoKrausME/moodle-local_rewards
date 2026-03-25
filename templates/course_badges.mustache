@@ -19,9 +19,39 @@
 
     Example context (json):
     {
+      "title": "Course Badges",
+      "subtitle": "View badges earned by students in this course.",
+      "rows": [
+        {
+          "imageurl": "https://example.com/pluginfile.php/201/local_rewards/badge-1.png",
+          "name": "Excellence in Learning",
+          "studentname": "John Smith",
+          "activity": "Final Project Submission",
+          "timeissued": "March 25, 2026",
+          "viewurl": "https://example.com/local/rewards/view.php?id=101",
+          "linkedinurl": "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fexample.com%2Flocal%2Frewards%2Fpublic.php%3Fid%3D101"
+        },
+        {
+          "imageurl": "https://example.com/pluginfile.php/202/local_rewards/badge-2.png",
+          "name": "Perfect Attendance",
+          "studentname": "Emily Johnson",
+          "activity": "Course Attendance",
+          "timeissued": "March 20, 2026",
+          "viewurl": "https://example.com/local/rewards/view.php?id=102",
+          "linkedinurl": "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fexample.com%2Flocal%2Frewards%2Fpublic.php%3Fid%3D102"
+        },
+        {
+          "imageurl": "https://example.com/pluginfile.php/203/local_rewards/badge-3.png",
+          "name": "Team Collaboration",
+          "studentname": "Michael Brown",
+          "activity": "Group Assignment",
+          "timeissued": "March 18, 2026",
+          "viewurl": "https://example.com/local/rewards/view.php?id=103",
+          "linkedinurl": "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fexample.com%2Flocal%2Frewards%2Fpublic.php%3Fid%3D103"
+        }
+      ]
     }
 }}
-
 <div class="local-rewards-page">
     <div class="local-rewards-toolbar">
         <div>
@@ -30,7 +60,7 @@
         </div>
     </div>
 
-    {{#rows.0}}
+    {{#rows}}
         <div class="local-rewards-table card shadow-sm border-0 rounded-4 overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
@@ -69,9 +99,9 @@
                 </table>
             </div>
         </div>
-    {{/rows.0}}
+    {{/rows}}
 
-    {{^rows.0}}
+    {{^rows}}
         <div class="local-rewards-empty">{{#str}}rewardnocoursebadges, local_rewards{{/str}}</div>
-    {{/rows.0}}
+    {{/rows}}
 </div>

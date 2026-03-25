@@ -19,9 +19,27 @@
 
     Example context (json):
     {
+      "createurl": "https://example.com/local/rewards/edit.php",
+      "cards": [
+        {
+          "imageurl": "https://example.com/pluginfile.php/101/local_rewards/badge-1.png",
+          "name": "Excellence in Learning",
+          "description": "<p>This badge is awarded to students who demonstrate outstanding engagement and achievement in course activities.</p>",
+          "editurl": "https://example.com/local/rewards/edit.php?id=1",
+          "deleteurl": "https://example.com/local/rewards/delete.php?id=1",
+          "deletelabel": "Are you sure you want to delete this badge?"
+        },
+        {
+          "imageurl": "https://example.com/pluginfile.php/102/local_rewards/badge-2.png",
+          "name": "Project Completion",
+          "description": "<p>This badge recognizes successful completion of the final project with all required criteria met.</p>",
+          "editurl": "https://example.com/local/rewards/edit.php?id=2",
+          "deleteurl": "https://example.com/local/rewards/delete.php?id=2",
+          "deletelabel": "Are you sure you want to delete this badge?"
+        }
+      ]
     }
 }}
-
 <div class="local-rewards-page">
     <div class="local-rewards-toolbar">
         <div>
@@ -31,7 +49,7 @@
         <a class="btn btn-primary" href="{{createurl}}">{{#str}}rewardcreatebadge, local_rewards{{/str}}</a>
     </div>
 
-    {{#cards.0}}
+    {{#cards}}
         <div class="local-rewards-grid">
             {{#cards}}
                 <article class="local-rewards-card">
@@ -51,9 +69,9 @@
                 </article>
             {{/cards}}
         </div>
-    {{/cards.0}}
+    {{/cards}}
 
-    {{^cards.0}}
+    {{^cards}}
         <div class="local-rewards-empty">{{#str}}rewardbankempty, local_rewards{{/str}}</div>
-    {{/cards.0}}
+    {{/cards}}
 </div>

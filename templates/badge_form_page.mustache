@@ -19,9 +19,13 @@
 
     Example context (json):
     {
+      "title": "Create New Badge",
+      "backurl": "https://example.com/local/rewards/bank.php",
+      "formhtml": "<form action=\"https://example.com/local/rewards/save.php\" method=\"post\"><div class=\"mb-3\"><label for=\"id_name\" class=\"form-label\">Badge Name</label><input type=\"text\" id=\"id_name\" name=\"name\" class=\"form-control\" value=\"\"></div><div class=\"mb-3\"><label for=\"id_description\" class=\"form-label\">Description</label><textarea id=\"id_description\" name=\"description\" class=\"form-control\" rows=\"4\"></textarea></div><div class=\"mb-3\"><label for=\"id_image\" class=\"form-label\">Badge Image</label><input type=\"file\" id=\"id_image\" name=\"image\" class=\"form-control\"></div><button type=\"submit\" class=\"btn btn-primary\">Save Badge</button></form>",
+      "previewurl": "https://example.com/pluginfile.php/123/local_rewards/badge-preview.png",
+      "defaultpreviewurl": "https://example.com/local/rewards/pix/default-badge.png"
     }
 }}
-
 <div class="local-rewards-formwrap">
     <div class="local-rewards-toolbar">
         <div>

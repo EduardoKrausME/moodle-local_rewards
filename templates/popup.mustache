@@ -19,9 +19,18 @@
 
     Example context (json):
     {
+      "imageurl": "https://example.com/pluginfile.php/401/local_rewards/badge-popup.png",
+      "issueimagealt": "Badge image for Excellence in Learning",
+      "name": "Excellence in Learning",
+      "description": "<p>This badge recognizes outstanding performance and active participation in course activities.</p>",
+      "coursename": "Introduction to Web Development",
+      "activityname": "Final Project Submission",
+      "timeissued": "March 25, 2026",
+      "viewurl": "https://example.com/local/rewards/view.php?id=301",
+      "haspublicurl": true,
+      "linkedinurl": "https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fexample.com%2Flocal%2Frewards%2Fpublic.php%3Fid%3D301"
     }
 }}
-
 <div class="local-rewards-popup" data-local-rewards-popup="true" aria-modal="true" role="dialog">
     <div class="local-rewards-popup__dialog">
         <div class="local-rewards-popup__body">
@@ -41,9 +50,11 @@
                 <div class="local-rewards-popup__actions">
                     <a class="btn btn-primary" href="{{viewurl}}">{{#str}}rewardviewbadge, local_rewards{{/str}}</a>
                     {{#haspublicurl}}
-                        <a class="btn btn-outline-primary" href="{{linkedinurl}}" target="_blank" rel="noopener">{{#str}}rewardsharelinkedin, local_rewards{{/str}}</a>
+                        <a class="btn btn-outline-primary" href="{{linkedinurl}}" target="_blank"
+                           rel="noopener">{{#str}}rewardsharelinkedin, local_rewards{{/str}}</a>
                     {{/haspublicurl}}
-                    <button class="btn btn-light" type="button" data-local-rewards-close="true">{{#str}}rewardclose, local_rewards{{/str}}</button>
+                    <button class="btn btn-light" type="button"
+                            data-local-rewards-close="true">{{#str}}rewardclose, local_rewards{{/str}}</button>
                 </div>
             </div>
         </div>
