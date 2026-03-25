@@ -31,7 +31,9 @@ require_login();
 $userid = optional_param("userid", $USER->id, PARAM_INT);
 $courseid = optional_param("courseid", 0, PARAM_INT);
 
-$targetuser = core_user::get_user($userid, "id, firstname, lastname, firstnamephonetic, lastnamephonetic, middlename, alternatename", MUST_EXIST);
+$targetuser = core_user::get_user(
+    $userid, "id, firstname, lastname, firstnamephonetic, lastnamephonetic, middlename, alternatename", MUST_EXIST
+);
 $isownpage = $userid == $USER->id;
 $systemcontext = context_system::instance();
 
@@ -47,7 +49,8 @@ if (!$isownpage) {
     }
 }
 
-$title = $isownpage ? get_string("rewardmybadges", "local_rewards") : get_string("rewardstudentbadgespage", "local_rewards", fullname($targetuser));
+$title = $isownpage ? get_string("rewardmybadges", "local_rewards") :
+    get_string("rewardstudentbadgespage", "local_rewards", fullname($targetuser));
 
 $PAGE->set_url("/local/rewards/my.php", ["userid" => $userid, "courseid" => $courseid]);
 $PAGE->set_context($courseid ? context_course::instance($courseid) : $systemcontext);

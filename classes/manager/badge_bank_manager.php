@@ -24,7 +24,9 @@
 
 namespace local_rewards\manager;
 
+use coding_exception;
 use dml_exception;
+use moodle_url;
 use stdClass;
 
 /**
@@ -131,6 +133,7 @@ class badge_bank_manager {
      * Exports bank badge cards for a template.
      *
      * @return array
+     * @throws coding_exception
      */
     public static function export_bank_cards() {
         $cards = [];
@@ -141,8 +144,8 @@ class badge_bank_manager {
                 "name" => format_string($badge->name),
                 "description" => format_text($badge->description, FORMAT_HTML),
                 "imageurl" => file_manager::get_image_url("badgeimage", $badge->id),
-                "editurl" => (new \moodle_url("/local/rewards/badge_edit.php", ["id" => $badge->id]))->out(false),
-                "deleteurl" => (new \moodle_url("/local/rewards/bank.php", ["delete" => $badge->id, "sesskey" => sesskey()]))->out(false),
+                "editurl" => new moodle_url("/local/rewards/badge_edit.php", ["id" => $badge->id]),
+                "deleteurl" => new moodle_url("/local/rewards/bank.php", ["delete" => $badge->id, "sesskey" => sesskey()]),
                 "deletelabel" => get_string("rewarddeletebadgeconfirm", "local_rewards", format_string($badge->name)),
             ];
         }

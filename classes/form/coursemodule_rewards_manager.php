@@ -57,7 +57,10 @@ class coursemodule_rewards_manager {
         $mform->addElement("advcheckbox", "rewards_enabled", get_string("rewardsenabled", "local_rewards"));
         $mform->addHelpButton("rewards_enabled", "rewardsenabled_desc", "local_rewards");
 
-        $mform->addElement("select", "rewards_badgeid", get_string("rewardbadgeid", "local_rewards"), badge_bank_manager::get_select_options());
+        $mform->addElement(
+            "select", "rewards_badgeid",
+            get_string("rewardbadgeid", "local_rewards"), badge_bank_manager::get_select_options()
+        );
         $mform->addHelpButton("rewards_badgeid", "rewardbadgeid_desc", "local_rewards");
 
         $mform->addElement("text", "rewards_name", get_string("rewardname", "local_rewards"), ["size" => 64]);
@@ -93,7 +96,10 @@ class coursemodule_rewards_manager {
         $mform->addElement("advcheckbox", "rewards_requiresubmission", get_string("rewardcriterionsubmission", "local_rewards"));
         $mform->addElement("advcheckbox", "rewards_requireattemptcompleted", get_string("rewardcriterionattempt", "local_rewards"));
         $mform->addElement("advcheckbox", "rewards_requirequizpass", get_string("rewardcriterionquizpass", "local_rewards"));
-        $mform->addElement("advcheckbox", "rewards_requireresourceview", get_string("rewardcriterionresourceview", "local_rewards"));
+        $mform->addElement(
+            "advcheckbox", "rewards_requireresourceview",
+            get_string("rewardcriterionresourceview", "local_rewards")
+        );
         $mform->addElement("advcheckbox", "rewards_requirewithinduedate", get_string("rewardcriterionwithindue", "local_rewards"));
 
         $details = "<ul class=\"mb-0\">";
@@ -118,7 +124,7 @@ class coursemodule_rewards_manager {
         $mform->setDefault("rewards_requireresourceview", $config ? $config->requireresourceview : 0);
         $mform->setDefault("rewards_requirewithinduedate", $config ? $config->requirewithinduedate : 0);
 
-        foreach ([
+        $fieldnames = [
             "rewards_badgeid",
             "rewards_name",
             "rewards_description",
@@ -135,7 +141,8 @@ class coursemodule_rewards_manager {
             "rewards_requirewithinduedate",
             "rewards_criteria_note",
             "rewards_note",
-        ] as $fieldname) {
+        ];
+        foreach ($fieldnames as $fieldname) {
             $mform->hideIf($fieldname, "rewards_enabled");
         }
     }
@@ -152,7 +159,8 @@ class coursemodule_rewards_manager {
             return;
         }
 
-        if (empty($data->rewards_enabled) && empty($data->rewards_badgeid) && empty($data->rewards_name) && empty($data->rewards_description)) {
+        if (empty($data->rewards_enabled) && empty($data->rewards_badgeid) && empty($data->rewards_name) &&
+            empty($data->rewards_description)) {
             $existing = config_manager::get_by_cmid($data->coursemodule);
             if ($existing) {
                 config_manager::delete_by_cmid($data->coursemodule);

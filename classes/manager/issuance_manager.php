@@ -24,7 +24,9 @@
 
 namespace local_rewards\manager;
 
+use core_user;
 use dml_exception;
+use moodle_url;
 use stdClass;
 
 /**
@@ -55,6 +57,7 @@ class issuance_manager {
             return $existing->id;
         }
 
+        $publictoken = hash("sha256", "{$config->id}:{$cmid}:{$userid}:" . uniqid());
         $issue = (object) [
             "configid" => $config->id,
             "badgeid" => $config->badgeid,
@@ -63,7 +66,7 @@ class issuance_manager {
             "userid" => $userid,
             "name" => config_manager::get_effective_name($config),
             "description" => config_manager::get_effective_description($config),
-            "publictoken" => hash("sha256", $config->id . ":" . $cmid . ":" . $userid . ":" . microtime(true) . ":" . random_string(20)),
+            "publictoken" => $publictoken,
             "popupshown" => 0,
             "timeissued" => time(),
             "timemodified" => time(),
@@ -202,7 +205,9 @@ class issuance_manager {
      * @return array
      */
     public static function export_issue(\stdClass $issue, $forpublic = false) {
-        $user = \core_user::get_user($issue->userid, "id, firstname, lastname, firstnamephonetic, lastnamephonetic, middlename, alternatename, email");
+        $user = core_user::get_user(
+            $issue->userid, "id, firstname, lastname, firstnamephonetic, lastnamephonetic, middlename, alternatename, email"
+        );
         $course = get_course($issue->courseid);
         $cm = get_coursemodule_from_id(null, $issue->cmid, 0, false, MUST_EXIST);
 
@@ -230,7 +235,8 @@ class issuance_manager {
             "shareimageurl" => self::get_personalized_image_url($issue),
             "linkedinurl" => self::build_linkedin_url($issue),
             "sharetext" => $sharetext,
-            "allbadgesurl" => (new \moodle_url("/local/rewards/my.php", ["userid" => $issue->userid, "courseid" => $issue->courseid]))->out(false),
+            "allbadgesurl" => (new moodle_url("/local/rewards/my.php", ["userid" => $issue->userid, "courseid" => $issue->courseid]
+            ))->out(false),
             "publicenabled" => self::is_public_enabled($issue),
             "issueimagealt" => get_string("rewardissueimagealt", "local_rewards"),
         ];
@@ -298,7 +304,7 @@ class issuance_manager {
     public static function get_issue_image_url(\stdClass $issue) {
         $config = config_manager::get_by_cmid($issue->cmid);
         if (!$config) {
-            return (new \moodle_url("/local/rewards/pix/defaultbadge.svg"))->out(false);
+            return (new moodle_url("/local/rewards/pix/defaultbadge.svg"))->out(false);
         }
 
         return config_manager::get_effective_image_url($config);
@@ -311,7 +317,7 @@ class issuance_manager {
      * @return string
      */
     public static function get_view_url(\stdClass $issue) {
-        return (new \moodle_url("/local/rewards/view.php", ["id" => $issue->id]))->out(false);
+        return (new moodle_url("/local/rewards/view.php", ["id" => $issue->id]))->out(false);
     }
 
     /**
@@ -321,7 +327,7 @@ class issuance_manager {
      * @return string
      */
     public static function get_public_url(\stdClass $issue) {
-        return (new \moodle_url("/local/rewards/public.php", ["token" => $issue->publictoken]))->out(false);
+        return (new moodle_url("/local/rewards/public.php", ["token" => $issue->publictoken]))->out(false);
     }
 
     /**
@@ -331,7 +337,7 @@ class issuance_manager {
      * @return string
      */
     public static function get_personalized_image_url(\stdClass $issue) {
-        return (new \moodle_url("/local/rewards/issue_image.php", ["token" => $issue->publictoken]))->out(false);
+        return (new moodle_url("/local/rewards/issue_image.php", ["token" => $issue->publictoken]))->out(false);
     }
 
     /**
