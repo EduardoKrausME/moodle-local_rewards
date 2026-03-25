@@ -54,7 +54,7 @@ class coursemodule_rewards_manager {
 
         $mform->addElement("header", "local_rewards_header", get_string("rewardsheader", "local_rewards"));
 
-        $mform->addElement("advcheckbox", "rewards_enabled", get_string("rewardsenabled", "local_rewards"));
+        $mform->addElement("selectyesno", "rewards_enabled", get_string("rewardsenabled", "local_rewards"));
         $mform->addHelpButton("rewards_enabled", "rewardsenabled_desc", "local_rewards");
 
         $mform->addElement(
@@ -81,27 +81,27 @@ class coursemodule_rewards_manager {
         );
         $mform->addHelpButton("rewards_image", "rewardbadgeimagehelp", "local_rewards");
 
-        $mform->addElement("advcheckbox", "rewards_publicenabled", get_string("rewardpublicenabled", "local_rewards"));
+        $mform->addElement("selectyesno", "rewards_publicenabled", get_string("rewardpublicenabled", "local_rewards"));
 
         $mform->addElement("header", "local_rewards_criteria_header", get_string("rewardcriteriaheader", "local_rewards"));
-        $mform->addElement("advcheckbox", "rewards_requirecompletion", get_string("rewardcriterioncompletion", "local_rewards"));
+        $mform->addElement("selectyesno", "rewards_requirecompletion", get_string("rewardcriterioncompletion", "local_rewards"));
         $mform->setDefault("rewards_requirecompletion", 1);
         $mform->freeze("rewards_requirecompletion");
         $mform->hideIf("local_rewards_criteria_header", "rewards_enabled");
 
-        $mform->addElement("advcheckbox", "rewards_requiremingrade", get_string("rewardcriterionmingrade", "local_rewards"));
+        $mform->addElement("selectyesno", "rewards_requiremingrade", get_string("rewardcriterionmingrade", "local_rewards"));
         $mform->addElement("text", "rewards_mingrade", get_string("rewardcriterionmingradevalue", "local_rewards"), ["size" => 10]);
         $mform->setType("rewards_mingrade", PARAM_FLOAT);
         $mform->hideIf("rewards_mingrade", "rewards_requiremingrade");
 
-        $mform->addElement("advcheckbox", "rewards_requiresubmission", get_string("rewardcriterionsubmission", "local_rewards"));
-        $mform->addElement("advcheckbox", "rewards_requireattemptcompleted", get_string("rewardcriterionattempt", "local_rewards"));
-        $mform->addElement("advcheckbox", "rewards_requirequizpass", get_string("rewardcriterionquizpass", "local_rewards"));
+        $mform->addElement("selectyesno", "rewards_requiresubmission", get_string("rewardcriterionsubmission", "local_rewards"));
+        $mform->addElement("selectyesno", "rewards_requireattemptcompleted", get_string("rewardcriterionattempt", "local_rewards"));
+        $mform->addElement("selectyesno", "rewards_requirequizpass", get_string("rewardcriterionquizpass", "local_rewards"));
         $mform->addElement(
-            "advcheckbox", "rewards_requireresourceview",
+            "selectyesno", "rewards_requireresourceview",
             get_string("rewardcriterionresourceview", "local_rewards")
         );
-        $mform->addElement("advcheckbox", "rewards_requirewithinduedate", get_string("rewardcriterionwithindue", "local_rewards"));
+        $mform->addElement("selectyesno", "rewards_requirewithinduedate", get_string("rewardcriterionwithindue", "local_rewards"));
 
         $details = "<ul class=\"mb-0\">";
         foreach (criteria_manager::get_supported_criteria_descriptions() as $row) {
