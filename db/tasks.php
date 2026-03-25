@@ -15,15 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * tasks.php
- *
- * @package   local_rewards
- * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
- * Scheduled tasks.
+ * Scheduled task list.
  *
  * @package   local_rewards
  * @copyright 2026 Eduardo Kraus
@@ -32,9 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * Scheduled task list.
- */
 $tasks = [
     [
         "classname" => "\\local_rewards\\task\\repair_awards_task",

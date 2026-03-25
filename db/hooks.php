@@ -15,14 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * hooks.php
- *
- * @package   local_rewards
- * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
  * Hook callback definitions.
  *
  * @package   local_rewards
@@ -34,9 +26,6 @@ use core\hook\output\before_footer_html_generation;
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * Hook callback list.
- */
 $callbacks = [
     [
         "hook" => before_footer_html_generation::class,

@@ -15,14 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * upgrade.php
- *
- * @package   local_rewards
- * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
  * Upgrade steps for local_rewards.
  *
  * @package   local_rewards
@@ -39,32 +31,5 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool
  */
 function xmldb_local_rewards_upgrade($oldversion) {
-    global $DB;
-
-    $dbman = $DB->get_manager();
-
-    if ($oldversion < 2026032501) {
-        $table = new xmldb_table("local_rewards_configs");
-
-        $fields = [
-            new xmldb_field("requirecompletion", XMLDB_TYPE_INTEGER, "1", null, XMLDB_NOTNULL, null, "1", "publicenabled"),
-            new xmldb_field("requiremingrade", XMLDB_TYPE_INTEGER, "1", null, XMLDB_NOTNULL, null, "0", "requirecompletion"),
-            new xmldb_field("mingrade", XMLDB_TYPE_NUMBER, "10, 2", null, null, null, null, "requiremingrade"),
-            new xmldb_field("requiresubmission", XMLDB_TYPE_INTEGER, "1", null, XMLDB_NOTNULL, null, "0", "mingrade"),
-            new xmldb_field("requireattemptcompleted", XMLDB_TYPE_INTEGER, "1", null, XMLDB_NOTNULL, null, "0", "requiresubmission"),
-            new xmldb_field("requirequizpass", XMLDB_TYPE_INTEGER, "1", null, XMLDB_NOTNULL, null, "0", "requireattemptcompleted"),
-            new xmldb_field("requireresourceview", XMLDB_TYPE_INTEGER, "1", null, XMLDB_NOTNULL, null, "0", "requirequizpass"),
-            new xmldb_field("requirewithinduedate", XMLDB_TYPE_INTEGER, "1", null, XMLDB_NOTNULL, null, "0", "requireresourceview"),
-        ];
-
-        foreach ($fields as $field) {
-            if (!$dbman->field_exists($table, $field)) {
-                $dbman->add_field($table, $field);
-            }
-        }
-
-        upgrade_plugin_savepoint(true, 2026032501, "local", "rewards");
-    }
-
     return true;
 }

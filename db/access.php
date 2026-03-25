@@ -15,14 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * access.php
- *
- * @package   local_rewards
- * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
  * Capability definitions.
  *
  * @package   local_rewards
@@ -32,9 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * Capability list for local_rewards.
- */
 $capabilities = [
     "local/rewards:manage" => [
         "captype" => "write",

@@ -15,14 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * events.php
- *
- * @package   local_rewards
- * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
  * Event observers.
  *
  * @package   local_rewards
@@ -32,9 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * Event observer definitions.
- */
 $observers = [
     [
         "eventname" => "\\core\\event\\course_module_completion_updated",
