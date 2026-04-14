@@ -24,15 +24,29 @@
 
 namespace local_rewards\manager;
 
+use stdClass;
+
 /**
  * Manages reward configuration per course module.
  */
 class config_manager {
     /**
+     * Returns one config by id.
+     *
+     * @param int $id The config id.
+     * @return stdClass|null
+     */
+    public static function get_by_id($id) {
+        global $DB;
+
+        return $DB->get_record("local_rewards_configs", ["id" => $id]);
+    }
+
+    /**
      * Returns one config by course module id.
      *
      * @param int $cmid The course module id.
-     * @return \stdClass|null
+     * @return stdClass|null
      */
     public static function get_by_cmid($cmid) {
         global $DB;
@@ -45,10 +59,10 @@ class config_manager {
      *
      * @param int $cmid The course module id.
      * @param int $courseid The course id.
-     * @param \stdClass $data The submitted data.
+     * @param stdClass $data The submitted data.
      * @return int
      */
-    public static function save_for_cmid($cmid, $courseid, \stdClass $data) {
+    public static function save_for_cmid($cmid, $courseid, stdClass $data) {
         global $DB;
 
         $now = time();
@@ -127,10 +141,10 @@ class config_manager {
     /**
      * Returns the effective name for a reward config.
      *
-     * @param \stdClass $config The config record.
+     * @param stdClass $config The config record.
      * @return string
      */
-    public static function get_effective_name(\stdClass $config) {
+    public static function get_effective_name(stdClass $config) {
         if (!empty($config->customname)) {
             return $config->customname;
         }
@@ -148,10 +162,10 @@ class config_manager {
     /**
      * Returns the effective description for a reward config.
      *
-     * @param \stdClass $config The config record.
+     * @param stdClass $config The config record.
      * @return string
      */
-    public static function get_effective_description(\stdClass $config) {
+    public static function get_effective_description(stdClass $config) {
         if (!empty($config->customdescription)) {
             return $config->customdescription;
         }
@@ -169,17 +183,22 @@ class config_manager {
     /**
      * Returns the effective image URL for a config.
      *
-     * @param \stdClass $config The config record.
+     * @param stdClass $config The config record.
      * @param bool $absolute Whether the URL should be absolute.
      * @return string
      */
-    public static function get_effective_image_url(\stdClass $config, $absolute = false) {
+    public static function get_effective_image_url(stdClass $config, $absolute = false) {
         $configimage = file_manager::get_image_url("configimage", $config->id, $absolute);
         if (!str_contains($configimage, "defaultbadge.svg")) {
             return $configimage;
         }
 
         if (!empty($config->badgeid)) {
+            $badge = badge_bank_manager::get_badge($config->badgeid);
+            if ($badge && template_manager::badge_has_template($badge)) {
+                return template_manager::get_config_preview_url($config, $absolute);
+            }
+
             return file_manager::get_image_url("badgeimage", $config->badgeid, $absolute);
         }
 
@@ -189,10 +208,10 @@ class config_manager {
     /**
      * Validates whether the config can issue a reward.
      *
-     * @param \stdClass $config The config record.
+     * @param stdClass $config The config record.
      * @return bool
      */
-    public static function is_ready(\stdClass $config) {
+    public static function is_ready(stdClass $config) {
         return !empty($config->enabled) && self::get_effective_name($config) != "";
     }
 }

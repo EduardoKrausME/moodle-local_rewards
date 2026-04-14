@@ -24,7 +24,6 @@
 
 namespace local_rewards\form;
 
-use coding_exception;
 use moodleform;
 
 defined('MOODLE_INTERNAL') || die;
@@ -39,7 +38,6 @@ class bank_badge_form extends moodleform {
      * Defines form fields.
      *
      * @return void
-     * @throws coding_exception
      */
     public function definition() {
         $mform = $this->_form;

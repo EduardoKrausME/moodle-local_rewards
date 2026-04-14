@@ -24,6 +24,7 @@
 
 namespace local_rewards;
 
+use coding_exception;
 use core\hook\output\before_footer_html_generation;
 use dml_exception;
 use Exception;
@@ -38,8 +39,8 @@ class hook_callbacks {
      *
      * @param before_footer_html_generation $hook The footer hook.
      * @return void
-     * @throws \coding_exception
-     * @throws \core\exception\moodle_exception
+     * @throws coding_exception
+     * @throws Exception
      */
     public static function before_footer_html_generation(before_footer_html_generation $hook) {
         global $OUTPUT, $PAGE, $USER;

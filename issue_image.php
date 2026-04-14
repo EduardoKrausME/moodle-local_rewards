@@ -41,11 +41,11 @@ $export = issuance_manager::export_issue($issue, true);
 $width = 1200;
 $height = 630;
 
-$name = s($export["name"]);
-$student = s($export["studentname"]);
-$course = s($export["coursename"]);
-$date = s($export["timeissued"]);
-$imageurl = s($export["imageurl"]);
+$name = $export["name"];
+$student = $export["studentname"];
+$course = $export["coursename"];
+$date = $export["timeissued"];
+$imageurl = $export["imageurl"];
 
 header("Content-Type: image/svg+xml; charset=utf-8");
 
@@ -79,5 +79,5 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
     <text x="450" y="450" font-family="Arial, Helvetica, sans-serif" font-size="24"
           fill="#64748b">Earned on <?php echo $date; ?></text>
     <text x="70" y="530" font-family="Arial, Helvetica, sans-serif" font-size="22"
-          fill="#94a3b8"><?php echo s($CFG->wwwroot); ?>/local/rewards/public.php?token=<?php echo s($token); ?></text>
+          fill="#94a3b8"><?php echo $CFG->wwwroot; ?>/local/rewards/public.php?token=<?php echo $token; ?></text>
 </svg>

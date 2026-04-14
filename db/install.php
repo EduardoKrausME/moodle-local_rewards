@@ -15,17 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version metadata.
+ * Post-install steps for local_rewards.
  *
  * @package   local_rewards
  * @copyright 2026 Eduardo Kraus
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+use local_rewards\manager\template_manager;
 
-$plugin->version = 2026032501;
-$plugin->release = "1.0.1";
-$plugin->component = "local_rewards";
-$plugin->requires = 2023100900;
-$plugin->maturity = MATURITY_STABLE;
+/**
+ * Post-install steps for local_rewards.
+ *
+ * @return void
+ */
+function xmldb_local_rewards_install() {
+    template_manager::install_default_badges();
+}

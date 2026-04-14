@@ -15,14 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * lib.php
- *
- * @package   local_rewards
- * @copyright 2026 Eduardo Kraus {@link https://eduardokraus.com}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
  * Global callbacks for local_rewards.
  *
  * @package   local_rewards
@@ -39,8 +31,6 @@ use local_rewards\manager\file_manager;
  * @param mixed $formwrapper The module form wrapper.
  * @param MoodleQuickForm $mform The form instance.
  * @return void
- * @throws coding_exception
- * @throws moodle_exception
  */
 function local_rewards_coursemodule_standard_elements($formwrapper, $mform) {
     coursemodule_rewards_manager::add_form_elements($formwrapper, $mform);
@@ -64,7 +54,6 @@ function local_rewards_coursemodule_edit_post_actions($data, $course) {
  * @param array $data Submitted form data.
  * @param array $files Uploaded file data.
  * @return array
- * @throws coding_exception
  */
 function local_rewards_coursemodule_validation($data, $files) {
     return coursemodule_rewards_manager::validate_form_data($data, $files);
@@ -99,8 +88,6 @@ function local_rewards_pluginfile($course, $cm, $context, $filearea, $args, $for
  *
  * @param global_navigation $navigation The global navigation.
  * @return void
- * @throws coding_exception
- * @throws dml_exception
  */
 function local_rewards_extend_navigation(global_navigation $navigation) {
     if (!isloggedin() || isguestuser()) {
@@ -125,7 +112,6 @@ function local_rewards_extend_navigation(global_navigation $navigation) {
  * @param bool $iscurrentuser Whether this is the current user profile.
  * @param stdClass|null $course Optional course object.
  * @return void
- * @throws Exception
  */
 function local_rewards_myprofile_navigation(core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
     global $USER;

@@ -24,6 +24,8 @@
 
 namespace local_rewards\manager;
 
+use context_course;
+use context_system;
 use core_user;
 use dml_exception;
 use moodle_url;
@@ -118,7 +120,7 @@ class issuance_manager {
      * Returns a single issue.
      *
      * @param int $id The issue id.
-     * @return \stdClass|null
+     * @return stdClass|null
      */
     public static function get_issue($id) {
         global $DB;
@@ -130,7 +132,7 @@ class issuance_manager {
      * Returns an issue by public token.
      *
      * @param string $token The public token.
-     * @return \stdClass|null
+     * @return stdClass|null
      */
     public static function get_issue_by_token($token) {
         global $DB;
@@ -170,29 +172,29 @@ class issuance_manager {
     /**
      * Returns whether a user can view an issue.
      *
-     * @param \stdClass $issue The issue record.
+     * @param stdClass $issue The issue record.
      * @param int $viewerid The viewer id.
      * @return bool
      */
-    public static function user_can_view(\stdClass $issue, $viewerid) {
+    public static function user_can_view(stdClass $issue, $viewerid) {
         if ($issue->userid == $viewerid) {
             return true;
         }
 
-        if (has_capability("local/rewards:manage", \context_system::instance())) {
+        if (has_capability("local/rewards:manage", context_system::instance())) {
             return true;
         }
 
-        return has_capability("local/rewards:viewcourse", \context_course::instance($issue->courseid));
+        return has_capability("local/rewards:viewcourse", context_course::instance($issue->courseid));
     }
 
     /**
      * Returns whether an issue can be shown publicly.
      *
-     * @param \stdClass $issue The issue record.
+     * @param stdClass $issue The issue record.
      * @return bool
      */
-    public static function is_public_enabled(\stdClass $issue) {
+    public static function is_public_enabled(stdClass $issue) {
         $config = config_manager::get_by_cmid($issue->cmid);
         return !empty($config->publicenabled);
     }
@@ -200,11 +202,11 @@ class issuance_manager {
     /**
      * Exports one issue to a template array.
      *
-     * @param \stdClass $issue The issue record.
+     * @param stdClass $issue The issue record.
      * @param bool $forpublic Whether this export is for the public page.
      * @return array
      */
-    public static function export_issue(\stdClass $issue, $forpublic = false) {
+    public static function export_issue(stdClass $issue, $forpublic = false) {
         $user = core_user::get_user(
             $issue->userid, "id, firstname, lastname, firstnamephonetic, lastnamephonetic, middlename, alternatename, email"
         );
@@ -223,7 +225,7 @@ class issuance_manager {
             "name" => format_string($issue->name),
             "description" => format_text($issue->description, FORMAT_HTML),
             "studentname" => fullname($user),
-            "studentemail" => s($user->email),
+            "studentemail" => $user->email,
             "coursename" => format_string($course->fullname),
             "activityname" => format_string($cm->name),
             "timeissued" => userdate($issue->timeissued),
@@ -298,10 +300,10 @@ class issuance_manager {
     /**
      * Returns the most appropriate image URL for an issue.
      *
-     * @param \stdClass $issue The issue record.
+     * @param stdClass $issue The issue record.
      * @return string
      */
-    public static function get_issue_image_url(\stdClass $issue) {
+    public static function get_issue_image_url(stdClass $issue) {
         $config = config_manager::get_by_cmid($issue->cmid);
         if (!$config) {
             return (new moodle_url("/local/rewards/pix/defaultbadge.svg"))->out(false);
@@ -313,40 +315,40 @@ class issuance_manager {
     /**
      * Returns a URL to the internal reward page.
      *
-     * @param \stdClass $issue The issue record.
+     * @param stdClass $issue The issue record.
      * @return string
      */
-    public static function get_view_url(\stdClass $issue) {
+    public static function get_view_url(stdClass $issue) {
         return (new moodle_url("/local/rewards/view.php", ["id" => $issue->id]))->out(false);
     }
 
     /**
      * Returns a URL to the public reward page.
      *
-     * @param \stdClass $issue The issue record.
+     * @param stdClass $issue The issue record.
      * @return string
      */
-    public static function get_public_url(\stdClass $issue) {
+    public static function get_public_url(stdClass $issue) {
         return (new moodle_url("/local/rewards/public.php", ["token" => $issue->publictoken]))->out(false);
     }
 
     /**
      * Returns a URL to the personalized share image.
      *
-     * @param \stdClass $issue The issue record.
+     * @param stdClass $issue The issue record.
      * @return string
      */
-    public static function get_personalized_image_url(\stdClass $issue) {
+    public static function get_personalized_image_url(stdClass $issue) {
         return (new moodle_url("/local/rewards/issue_image.php", ["token" => $issue->publictoken]))->out(false);
     }
 
     /**
      * Builds the LinkedIn share URL.
      *
-     * @param \stdClass $issue The issue record.
+     * @param stdClass $issue The issue record.
      * @return string
      */
-    public static function build_linkedin_url(\stdClass $issue) {
+    public static function build_linkedin_url(stdClass $issue) {
         $target = self::is_public_enabled($issue) ? self::get_public_url($issue) : self::get_view_url($issue);
         return "https://www.linkedin.com/sharing/share-offsite/?url=" . rawurlencode($target);
     }
@@ -354,11 +356,11 @@ class issuance_manager {
     /**
      * Builds a human friendly share text.
      *
-     * @param \stdClass $issue The issue record.
-     * @param \stdClass $course The course object.
+     * @param stdClass $issue The issue record.
+     * @param stdClass $course The course object.
      * @return string
      */
-    public static function build_share_text(\stdClass $issue, \stdClass $course) {
+    public static function build_share_text(stdClass $issue, stdClass $course) {
         $payload = (object) [
             "name" => format_string($issue->name),
             "course" => format_string($course->fullname),

@@ -25,6 +25,8 @@
 namespace local_rewards\manager;
 
 use context;
+use context_system;
+use moodle_url;
 use stdClass;
 
 /**
@@ -87,7 +89,7 @@ class file_manager {
      * @return string
      */
     public static function get_image_url($filearea, $itemid, $absolute = false) {
-        $context = \context_system::instance();
+        $context = context_system::instance();
         $fs = get_file_storage();
         $files = $fs->get_area_files($context->id, "local_rewards", $filearea, $itemid, "itemid, filepath, filename", false);
 
@@ -96,7 +98,7 @@ class file_manager {
                 continue;
             }
 
-            $url = \moodle_url::make_pluginfile_url(
+            $url = moodle_url::make_pluginfile_url(
                 $context->id,
                 "local_rewards",
                 $filearea,
@@ -108,7 +110,7 @@ class file_manager {
             return $absolute ? $url->out(false) : $url->out(false);
         }
 
-        return (new \moodle_url("/local/rewards/pix/defaultbadge.svg"))->out(false);
+        return new moodle_url("/local/rewards/pix/defaultbadge.svg");
     }
 
     /**
@@ -120,7 +122,7 @@ class file_manager {
      * @return void
      */
     public static function save_draft_files($draftitemid, $filearea, $itemid) {
-        $context = \context_system::instance();
+        $context = context_system::instance();
         file_save_draft_area_files(
             $draftitemid,
             $context->id,
@@ -139,7 +141,7 @@ class file_manager {
      * @return void
      */
     public static function delete_area_files($filearea, $itemid) {
-        $context = \context_system::instance();
+        $context = context_system::instance();
         $fs = get_file_storage();
         $fs->delete_area_files($context->id, "local_rewards", $filearea, $itemid);
     }
@@ -169,7 +171,7 @@ class file_manager {
         $draftitemid = file_get_unused_draft_itemid();
         file_prepare_draft_area(
             $draftitemid,
-            \context_system::instance()->id,
+            context_system::instance()->id,
             "local_rewards",
             $filearea,
             $itemid,

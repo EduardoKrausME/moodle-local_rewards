@@ -24,6 +24,8 @@
 
 namespace local_rewards\manager;
 
+use stdClass;
+
 /**
  * Evaluates configured badge criteria for one user and one activity.
  */
@@ -31,11 +33,11 @@ class criteria_manager {
     /**
      * Returns whether all configured criteria are satisfied.
      *
-     * @param \stdClass $config The reward config.
+     * @param stdClass $config The reward config.
      * @param int $userid The user id.
      * @return bool
      */
-    public static function user_matches_config(\stdClass $config, $userid) {
+    public static function user_matches_config(stdClass $config, $userid) {
         if (empty($config->enabled)) {
             return false;
         }
@@ -93,10 +95,10 @@ class criteria_manager {
     /**
      * Returns a configured due timestamp for a module when possible.
      *
-     * @param \stdClass $cm The course module.
+     * @param stdClass $cm The course module.
      * @return int
      */
-    public static function get_module_due_timestamp(\stdClass $cm) {
+    public static function get_module_due_timestamp(stdClass $cm) {
         global $DB;
 
         $map = [
@@ -131,11 +133,11 @@ class criteria_manager {
     /**
      * Returns whether the activity completion is marked.
      *
-     * @param \stdClass $config The reward config.
+     * @param stdClass $config The reward config.
      * @param int $userid The user id.
      * @return bool
      */
-    protected static function has_required_completion(\stdClass $config, $userid) {
+    protected static function has_required_completion(stdClass $config, $userid) {
         global $DB;
 
         $completion = $DB->get_record("course_modules_completion", [
@@ -175,12 +177,12 @@ class criteria_manager {
     /**
      * Returns whether the user reached the configured minimum grade.
      *
-     * @param \stdClass $cm The course module.
+     * @param stdClass $cm The course module.
      * @param int $userid The user id.
      * @param float $mingrade The configured minimum grade.
      * @return bool
      */
-    protected static function has_minimum_grade(\stdClass $cm, $userid, $mingrade) {
+    protected static function has_minimum_grade(stdClass $cm, $userid, $mingrade) {
         global $DB;
 
         $gradeitem = $DB->get_record("grade_items", [
@@ -219,11 +221,11 @@ class criteria_manager {
     /**
      * Returns whether the user has a valid submission for this activity.
      *
-     * @param \stdClass $cm The course module.
+     * @param stdClass $cm The course module.
      * @param int $userid The user id.
      * @return bool
      */
-    protected static function has_submission(\stdClass $cm, $userid) {
+    protected static function has_submission(stdClass $cm, $userid) {
         global $DB;
 
         if ($cm->modname == "assign") {
@@ -245,11 +247,11 @@ class criteria_manager {
     /**
      * Returns whether the user has a finished attempt.
      *
-     * @param \stdClass $cm The course module.
+     * @param stdClass $cm The course module.
      * @param int $userid The user id.
      * @return bool
      */
-    protected static function has_completed_attempt(\stdClass $cm, $userid) {
+    protected static function has_completed_attempt(stdClass $cm, $userid) {
         global $DB;
 
         if ($cm->modname == "quiz") {
@@ -266,11 +268,11 @@ class criteria_manager {
     /**
      * Returns whether the user passed a quiz according to the grade pass value.
      *
-     * @param \stdClass $cm The course module.
+     * @param stdClass $cm The course module.
      * @param int $userid The user id.
      * @return bool
      */
-    protected static function has_quiz_passed(\stdClass $cm, $userid) {
+    protected static function has_quiz_passed(stdClass $cm, $userid) {
         global $DB;
 
         if ($cm->modname != "quiz") {
@@ -295,11 +297,11 @@ class criteria_manager {
     /**
      * Returns whether the user viewed the resource activity.
      *
-     * @param \stdClass $cm The course module.
+     * @param stdClass $cm The course module.
      * @param int $userid The user id.
      * @return bool
      */
-    protected static function has_resource_view(\stdClass $cm, $userid) {
+    protected static function has_resource_view(stdClass $cm, $userid) {
         global $DB;
 
         $supportedmodules = ["resource", "page", "url", "folder", "book"];
@@ -322,11 +324,11 @@ class criteria_manager {
     /**
      * Returns whether completion happened on or before the due date.
      *
-     * @param \stdClass $cm The course module.
+     * @param stdClass $cm The course module.
      * @param int $userid The user id.
      * @return bool
      */
-    protected static function is_completed_within_due_date(\stdClass $cm, $userid) {
+    protected static function is_completed_within_due_date(stdClass $cm, $userid) {
         $duedate = self::get_module_due_timestamp($cm);
         if (!$duedate) {
             return false;

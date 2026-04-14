@@ -25,12 +25,13 @@
 namespace local_rewards\task;
 
 use coding_exception;
+use core\task\scheduled_task;
 use local_rewards\manager\issuance_manager;
 
 /**
  * Repairs missing rewards that may have been skipped by events.
  */
-class repair_awards_task extends \core\task\scheduled_task {
+class repair_awards_task extends scheduled_task {
     /**
      * Returns the human readable task name.
      *

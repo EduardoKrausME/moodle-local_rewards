@@ -48,20 +48,22 @@ class coursemodule_rewards_manager {
      * @throws moodle_exception
      */
     public static function add_form_elements($formwrapper, MoodleQuickForm $mform) {
+        global $PAGE;
+
         $cmid = optional_param("update", 0, PARAM_INT);
         $config = $cmid ? config_manager::get_by_cmid($cmid) : null;
         $draftimage = $config ? file_manager::prepare_draft_files("configimage", $config->id) : file_get_unused_draft_itemid();
+        $selectedbadgeid = $config ? $config->badgeid : 0;
 
         $mform->addElement("header", "local_rewards_header", get_string("rewardsheader", "local_rewards"));
 
         $mform->addElement("selectyesno", "rewards_enabled", get_string("rewardsenabled", "local_rewards"));
         $mform->addHelpButton("rewards_enabled", "rewardsenabled_desc", "local_rewards");
 
-        $mform->addElement(
-            "select", "rewards_badgeid",
-            get_string("rewardbadgeid", "local_rewards"), badge_bank_manager::get_select_options()
-        );
-        $mform->addHelpButton("rewards_badgeid", "rewardbadgeid_desc", "local_rewards");
+        $mform->addElement("static", "rewards_badgeid_info", get_string("rewardbadgeid", "local_rewards"), get_string("rewardbadgeid_desc", "local_rewards"));
+        $mform->addElement("hidden", "rewards_badgeid", $selectedbadgeid);
+        $mform->setType("rewards_badgeid", PARAM_INT);
+        $mform->addElement("static", "rewards_badgeid_grid", "", badge_bank_manager::render_grid_select("rewards_badgeid", $selectedbadgeid));
 
         $mform->addElement("text", "rewards_name", get_string("rewardname", "local_rewards"), ["size" => 64]);
         $mform->setType("rewards_name", PARAM_TEXT);
@@ -87,32 +89,28 @@ class coursemodule_rewards_manager {
         $mform->addElement("selectyesno", "rewards_requirecompletion", get_string("rewardcriterioncompletion", "local_rewards"));
         $mform->setDefault("rewards_requirecompletion", 1);
         $mform->freeze("rewards_requirecompletion");
-        $mform->hideIf("local_rewards_criteria_header", "rewards_enabled");
 
         $mform->addElement("selectyesno", "rewards_requiremingrade", get_string("rewardcriterionmingrade", "local_rewards"));
         $mform->addElement("text", "rewards_mingrade", get_string("rewardcriterionmingradevalue", "local_rewards"), ["size" => 10]);
         $mform->setType("rewards_mingrade", PARAM_FLOAT);
-        $mform->hideIf("rewards_mingrade", "rewards_requiremingrade");
+        $mform->hideIf("rewards_mingrade", "rewards_requiremingrade", "notchecked");
 
         $mform->addElement("selectyesno", "rewards_requiresubmission", get_string("rewardcriterionsubmission", "local_rewards"));
         $mform->addElement("selectyesno", "rewards_requireattemptcompleted", get_string("rewardcriterionattempt", "local_rewards"));
         $mform->addElement("selectyesno", "rewards_requirequizpass", get_string("rewardcriterionquizpass", "local_rewards"));
-        $mform->addElement(
-            "selectyesno", "rewards_requireresourceview",
-            get_string("rewardcriterionresourceview", "local_rewards")
-        );
+        $mform->addElement("selectyesno", "rewards_requireresourceview", get_string("rewardcriterionresourceview", "local_rewards"));
         $mform->addElement("selectyesno", "rewards_requirewithinduedate", get_string("rewardcriterionwithindue", "local_rewards"));
 
         $details = "<ul class=\"mb-0\">";
         foreach (criteria_manager::get_supported_criteria_descriptions() as $row) {
-            $details .= "<li>" . s($row) . "</li>";
+            $details .= "<li>" . $row . "</li>";
         }
         $details .= "</ul>";
         $mform->addElement("static", "rewards_criteria_note", get_string("rewardcriteriahelp", "local_rewards"), $details);
         $mform->addElement("static", "rewards_note", "", get_string("rewardactivitysettingsnote", "local_rewards"));
 
         $mform->setDefault("rewards_enabled", $config ? $config->enabled : 0);
-        $mform->setDefault("rewards_badgeid", $config ? $config->badgeid : 0);
+        $mform->setDefault("rewards_badgeid", $selectedbadgeid);
         $mform->setDefault("rewards_name", $config ? $config->customname : "");
         $mform->setDefault("rewards_description", $config ? $config->customdescription : "");
         $mform->setDefault("rewards_image", $draftimage);
@@ -125,8 +123,10 @@ class coursemodule_rewards_manager {
         $mform->setDefault("rewards_requireresourceview", $config ? $config->requireresourceview : 0);
         $mform->setDefault("rewards_requirewithinduedate", $config ? $config->requirewithinduedate : 0);
 
-        $fieldnames = [
+        foreach ([
+            "rewards_badgeid_info",
             "rewards_badgeid",
+            "rewards_badgeid_grid",
             "rewards_name",
             "rewards_description",
             "rewards_image",
@@ -142,10 +142,11 @@ class coursemodule_rewards_manager {
             "rewards_requirewithinduedate",
             "rewards_criteria_note",
             "rewards_note",
-        ];
-        foreach ($fieldnames as $fieldname) {
-            $mform->hideIf($fieldname, "rewards_enabled");
+        ] as $fieldname) {
+            $mform->hideIf($fieldname, "rewards_enabled", 1);
         }
+
+        $PAGE->requires->js_call_amd("local_rewards/badge_grid", "init");
     }
 
     /**
@@ -160,8 +161,7 @@ class coursemodule_rewards_manager {
             return;
         }
 
-        if (empty($data->rewards_enabled) && empty($data->rewards_badgeid) && empty($data->rewards_name) &&
-            empty($data->rewards_description)) {
+        if (empty($data->rewards_enabled) && empty($data->rewards_badgeid) && empty($data->rewards_name) && empty($data->rewards_description)) {
             $existing = config_manager::get_by_cmid($data->coursemodule);
             if ($existing) {
                 config_manager::delete_by_cmid($data->coursemodule);
@@ -179,7 +179,6 @@ class coursemodule_rewards_manager {
      * @param array $data Submitted form data.
      * @param array $files Uploaded files.
      * @return array
-     * @throws coding_exception
      */
     public static function validate_form_data(array $data, array $files) {
         $errors = [];
@@ -212,7 +211,6 @@ class coursemodule_rewards_manager {
      *
      * @param int $draftitemid The draft item id.
      * @return bool
-     * @throws coding_exception
      */
     protected static function draft_has_files($draftitemid) {
         global $USER;

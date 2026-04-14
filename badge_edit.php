@@ -77,9 +77,9 @@ echo $OUTPUT->header();
 
 echo $OUTPUT->render_from_template("local_rewards/badge_form_page", [
     "title" => $badge ? get_string("rewardeditbadge", "local_rewards") : get_string("rewardcreatebadge", "local_rewards"),
-    "backurl" => (new moodle_url("/local/rewards/bank.php"))->out(false),
+    "backurl" => new moodle_url("/local/rewards/bank.php"),
     "formhtml" => $formhtml,
-    "previewurl" => $badge ? file_manager::get_image_url("badgeimage", $badge->id) : "",
+    "previewurl" => $badge ? badge_bank_manager::get_badge_image_url($badge) : "",
     "defaultpreviewurl" => (new moodle_url("/local/rewards/pix/defaultbadge.svg"))->out(false),
 ]);
 

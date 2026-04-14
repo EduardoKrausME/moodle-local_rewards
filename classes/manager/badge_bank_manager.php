@@ -26,6 +26,7 @@ namespace local_rewards\manager;
 
 use coding_exception;
 use dml_exception;
+use moodle_exception;
 use moodle_url;
 use stdClass;
 
@@ -63,8 +64,6 @@ class badge_bank_manager {
      * @param stdClass $record The badge data.
      * @param int $draftimageitemid The draft image id.
      * @return int
-     * @throws dml_exception
-     * @throws \moodle_exception
      */
     public static function save_badge(stdClass $record, $draftimageitemid = 0) {
         global $DB, $USER;
@@ -74,7 +73,7 @@ class badge_bank_manager {
         if (!empty($record->id)) {
             $existing = self::get_badge($record->id);
             if (!$existing) {
-                throw new \moodle_exception("invaliddata");
+                throw new moodle_exception("invaliddata");
             }
 
             $existing->name = trim($record->name);
@@ -86,6 +85,7 @@ class badge_bank_manager {
             $newrecord = (object) [
                 "name" => trim($record->name),
                 "description" => trim($record->description),
+                "templatekey" => "",
                 "createdby" => $USER->id,
                 "timecreated" => $now,
                 "timemodified" => $now,
@@ -115,6 +115,21 @@ class badge_bank_manager {
     }
 
     /**
+     * Returns the best preview image URL for one bank badge.
+     *
+     * @param stdClass $badge The badge record.
+     * @param bool $absolute Whether the URL should be absolute.
+     * @return string
+     */
+    public static function get_badge_image_url(stdClass $badge, $absolute = false) {
+        if (template_manager::badge_has_template($badge)) {
+            return template_manager::get_badge_preview_url($badge, $absolute);
+        }
+
+        return file_manager::get_image_url("badgeimage", $badge->id, $absolute);
+    }
+
+    /**
      * Returns select options for the activity form.
      *
      * @return array
@@ -130,10 +145,59 @@ class badge_bank_manager {
     }
 
     /**
+     * Renders the visual badge grid selector used in activity settings.
+     *
+     * @param string $fieldname The hidden field name.
+     * @param int $selectedid The selected badge id.
+     * @return string
+     */
+    public static function render_grid_select($fieldname, $selectedid = 0) {
+        $cards = [];
+
+        $cards[] = [
+            "id" => 0,
+            "name" => get_string("rewardgridcustom", "local_rewards"),
+            "description" => get_string("rewardgridcustom_desc", "local_rewards"),
+            "imageurl" => new moodle_url("/local/rewards/pix/defaultbadge.svg"),
+            "selected" => $selectedid == 0,
+        ];
+
+        foreach (self::get_all_badges() as $badge) {
+            $cards[] = [
+                "id" => $badge->id,
+                "name" => format_string($badge->name),
+                "description" => format_text($badge->description, FORMAT_HTML),
+                "imageurl" => self::get_badge_image_url($badge),
+                "selected" => $selectedid == $badge->id,
+            ];
+        }
+
+        $content = [];
+        $content[] = '<div class="local-rewards-gridselect" data-local-rewards-grid="true">';
+        $content[] = '<div class="local-rewards-gridselect__options">';
+
+        foreach ($cards as $card) {
+            $selectedclass = $card["selected"] ? " is-selected" : "";
+            $content[] = '<button type="button" class="local-rewards-gridselect__option' . $selectedclass . '" data-badge-option="' . $card["id"] . '">';
+            $content[] = '<span class="local-rewards-gridselect__visual">';
+            $content[] = '<object data="' . $card["imageurl"] . '" type="image/svg+xml" ></object>';
+            //$content[] = '<img src="' . $card["imageurl"] . '" alt="">';
+            $content[] = '</span>';
+            $content[] = '<span class="local-rewards-gridselect__title">' . $card["name"] . '</span>';
+            $content[] = '<span class="local-rewards-gridselect__description">' . strip_tags($card["description"]) . '</span>';
+            $content[] = '</button>';
+        }
+
+        $content[] = '</div>';
+        $content[] = '</div>';
+
+        return implode("\n", $content);
+    }
+
+    /**
      * Exports bank badge cards for a template.
      *
      * @return array
-     * @throws coding_exception
      */
     public static function export_bank_cards() {
         $cards = [];
@@ -143,7 +207,7 @@ class badge_bank_manager {
                 "id" => $badge->id,
                 "name" => format_string($badge->name),
                 "description" => format_text($badge->description, FORMAT_HTML),
-                "imageurl" => file_manager::get_image_url("badgeimage", $badge->id),
+                "imageurl" => self::get_badge_image_url($badge),
                 "editurl" => new moodle_url("/local/rewards/badge_edit.php", ["id" => $badge->id]),
                 "deleteurl" => new moodle_url("/local/rewards/bank.php", ["delete" => $badge->id, "sesskey" => sesskey()]),
                 "deletelabel" => get_string("rewarddeletebadgeconfirm", "local_rewards", format_string($badge->name)),
