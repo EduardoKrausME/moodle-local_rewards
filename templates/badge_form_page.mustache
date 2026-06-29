@@ -32,7 +32,7 @@
             <h1 class="h2 mb-1">{{title}}</h1>
             <div class="text-muted">{{#str}}rewardbanksubtitle, local_rewards{{/str}}</div>
         </div>
-        <a class="btn btn-light" href="{{backurl}}">{{#str}}rewardbacktobank, local_rewards{{/str}}</a>
+        <a class="btn btn-light" href="{{{backurl}}}">{{#str}}rewardbacktobank, local_rewards{{/str}}</a>
     </div>
 
     <div class="row g-4">
@@ -46,10 +46,10 @@
         <div class="col-lg-4">
             <div class="local-rewards-preview">
                 {{#previewurl}}
-                    <img src="{{previewurl}}" alt="">
+                    <img src="{{{previewurl}}}" alt="">
                 {{/previewurl}}
                 {{^previewurl}}
-                    <img src="{{defaultpreviewurl}}" alt="">
+                    <img src="{{{defaultpreviewurl}}}" alt="">
                 {{/previewurl}}
             </div>
         </div>
