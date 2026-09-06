@@ -118,3 +118,7 @@ $string['rewardgridcustom_desc'] = 'Do not use a badge from the bank. You can up
 
 $string['rewardsenabled_desc_help'] = '';
 $string['rewardbadgeimagehelp_help'] = '';
+$string['rewards:manage'] = 'Manage rewards';
+$string['rewards:viewown'] = 'View own rewards';
+$string['rewards:viewcourse'] = 'View course rewards';
+$string['rewards:viewpublic'] = 'View public rewards';
